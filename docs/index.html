@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket & SSE Demo - Documentatie</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-12">
+            <div class="container mx-auto px-4">
+                <h1 class="text-4xl font-bold mb-2">WebSocket & Server-Sent Events Demo</h1>
+                <p class="text-xl opacity-90">Real-time communicatie technologieën uitgelegd</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container mx-auto px-4 py-12">
+            <!-- About Section -->
+            <section class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-4 text-gray-800">Over dit project</h2>
+                <p class="text-lg text-gray-700 mb-4">
+                    Deze demo toont het verschil tussen <strong>WebSockets</strong> en <strong>Server-Sent Events (SSE)</strong>, 
+                    twee krachtige technologieën voor real-time communicatie tussen client en server.
+                </p>
+                <p class="text-lg text-gray-700 mb-4">
+                    Het project bestaat uit een Node.js backend met Express en een React + TypeScript frontend, 
+                    gestyled met Tailwind CSS.
+                </p>
+                
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mt-6">
+                    <p class="text-sm text-gray-700">
+                        <strong>⚠️ Let op:</strong> De live demo werkt niet op GitHub Pages omdat de server-side code lokaal moet draaien. 
+                        Volg de installatie-instructies hieronder om de demo lokaal te testen.
+                    </p>
+                </div>
+
+                <div class="mt-6 flex gap-4 flex-wrap">
+                    <a href="https://github.com/Timva/websocket-sse-demo" 
+                       class="bg-gray-800 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition inline-flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd"/>
+                        </svg>
+                        Bekijk op GitHub
+                    </a>
+                </div>
+            </section>
+
+            <!-- Installation -->
+            <section class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-4 text-gray-800">Installatie & Gebruik</h2>
+                
+                <h3 class="text-xl font-semibold mb-3 text-gray-800">Vereisten</h3>
+                <ul class="list-disc list-inside mb-6 text-gray-700">
+                    <li>Node.js (v18 of hoger)</li>
+                    <li>npm of yarn</li>
+                </ul>
+
+                <h3 class="text-xl font-semibold mb-3 text-gray-800">Stappen</h3>
+                <div class="space-y-4">
+                    <div>
+                        <p class="font-semibold text-gray-800 mb-2">1. Clone de repository</p>
+                        <pre class="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto"><code>git clone https://github.com/Timva/websocket-sse-demo.git
+cd websocket-sse-demo</code></pre>
+                    </div>
+
+                    <div>
+                        <p class="font-semibold text-gray-800 mb-2">2. Installeer dependencies</p>
+                        <pre class="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto"><code>npm install</code></pre>
+                    </div>
+
+                    <div>
+                        <p class="font-semibold text-gray-800 mb-2">3. Start de backend server (Terminal 1)</p>
+                        <pre class="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto"><code>npm run server</code></pre>
+                        <p class="text-sm text-gray-600 mt-2">Server draait op http://localhost:3001</p>
+                    </div>
+
+                    <div>
+                        <p class="font-semibold text-gray-800 mb-2">4. Start de frontend (Terminal 2)</p>
+                        <pre class="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto"><code>npm run dev</code></pre>
+                        <p class="text-sm text-gray-600 mt-2">Frontend draait op http://localhost:5173</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Technology Comparison -->
+            <section class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-6 text-gray-800">WebSocket vs Server-Sent Events</h2>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="border border-gray-300 px-4 py-3 text-left">Feature</th>
+                                <th class="border border-gray-300 px-4 py-3 text-left">WebSocket</th>
+                                <th class="border border-gray-300 px-4 py-3 text-left">Server-Sent Events</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border border-gray-300 px-4 py-3 font-semibold">Communicatie richting</td>
+                                <td class="border border-gray-300 px-4 py-3">Bi-directioneel (↔️)</td>
+                                <td class="border border-gray-300 px-4 py-3">Eenrichtingsverkeer (server → client)</td>
+                            </tr>
+                            <tr class="bg-gray-50">
+                                <td class="border border-gray-300 px-4 py-3 font-semibold">Protocol</td>
+                                <td class="border border-gray-300 px-4 py-3">WebSocket protocol (ws:// / wss://)</td>
+                                <td class="border border-gray-300 px-4 py-3">HTTP/HTTPS</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 px-4 py-3 font-semibold">Gebruik cases</td>
+                                <td class="border border-gray-300 px-4 py-3">Chat apps, multiplayer games, real-time collaboration</td>
+                                <td class="border border-gray-300 px-4 py-3">Live feeds, notifications, dashboards, status updates</td>
+                            </tr>
+                            <tr class="bg-gray-50">
+                                <td class="border border-gray-300 px-4 py-3 font-semibold">Browser support</td>
+                                <td class="border border-gray-300 px-4 py-3">Uitstekend (alle moderne browsers)</td>
+                                <td class="border border-gray-300 px-4 py-3">Uitstekend (alle moderne browsers)</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 px-4 py-3 font-semibold">Reconnectie</td>
+                                <td class="border border-gray-300 px-4 py-3">Handmatig implementeren</td>
+                                <td class="border border-gray-300 px-4 py-3">Automatisch ingebouwd</td>
+                            </tr>
+                            <tr class="bg-gray-50">
+                                <td class="border border-gray-300 px-4 py-3 font-semibold">Complexiteit</td>
+                                <td class="border border-gray-300 px-4 py-3">Gemiddeld</td>
+                                <td class="border border-gray-300 px-4 py-3">Simpel</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 px-4 py-3 font-semibold">Data formaat</td>
+                                <td class="border border-gray-300 px-4 py-3">Text, Binary (flexibel)</td>
+                                <td class="border border-gray-300 px-4 py-3">Text only (meestal JSON)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Features -->
+            <section class="grid md:grid-cols-2 gap-8 mb-8">
+                <div class="bg-white rounded-lg shadow-lg p-8">
+                    <h3 class="text-2xl font-bold mb-4 text-blue-600">🔌 WebSocket Features</h3>
+                    <ul class="space-y-2 text-gray-700">
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Bi-directionele real-time communicatie
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Berichten versturen van client naar server
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Directe responses ontvangen
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Broadcast naar alle verbonden clients
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Connectie status indicator
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-lg p-8">
+                    <h3 class="text-2xl font-bold mb-4 text-purple-600">📡 SSE Features</h3>
+                    <ul class="space-y-2 text-gray-700">
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Eenrichtings server-naar-client streaming
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Automatische updates elke 2 seconden
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Handmatige connect/disconnect controls
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Real-time timestamps en data
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2">✓</span>
+                            Connectie status indicator
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Technologies -->
+            <section class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-6 text-gray-800">Gebruikte Technologieën</h2>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3 text-gray-800">Backend</h3>
+                        <ul class="space-y-2 text-gray-700">
+                            <li><strong>Express.js</strong> - Web framework voor Node.js</li>
+                            <li><strong>ws</strong> - WebSocket library</li>
+                            <li><strong>cors</strong> - Cross-Origin Resource Sharing middleware</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3 text-gray-800">Frontend</h3>
+                        <ul class="space-y-2 text-gray-700">
+                            <li><strong>React 19</strong> - UI framework</li>
+                            <li><strong>TypeScript</strong> - Type-safe JavaScript</li>
+                            <li><strong>Vite</strong> - Snelle build tool</li>
+                            <li><strong>Tailwind CSS</strong> - Utility-first CSS framework</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Resources -->
+            <section class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-6 text-gray-800">Bronnen & Documentatie</h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2 text-gray-800">WebSocket</h3>
+                        <ul class="space-y-2">
+                            <li>
+                                <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebSocket" 
+                                   target="_blank" 
+                                   class="text-blue-600 hover:underline">
+                                    📖 WebSocket API (MDN Web Docs)
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/websockets/ws" 
+                                   target="_blank" 
+                                   class="text-blue-600 hover:underline">
+                                    📦 ws - WebSocket library voor Node.js
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://datatracker.ietf.org/doc/html/rfc6455" 
+                                   target="_blank" 
+                                   class="text-blue-600 hover:underline">
+                                    📄 RFC 6455 - The WebSocket Protocol
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2 text-gray-800">Server-Sent Events</h3>
+                        <ul class="space-y-2">
+                            <li>
+                                <a href="https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events" 
+                                   target="_blank" 
+                                   class="text-blue-600 hover:underline">
+                                    📖 Server-Sent Events (MDN Web Docs)
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://html.spec.whatwg.org/multipage/server-sent-events.html" 
+                                   target="_blank" 
+                                   class="text-blue-600 hover:underline">
+                                    📄 WHATWG HTML Spec - Server-Sent Events
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2 text-gray-800">Frameworks & Tools</h3>
+                        <ul class="space-y-2">
+                            <li>
+                                <a href="https://react.dev/" 
+                                   target="_blank" 
+                                   class="text-blue-600 hover:underline">
+                                    ⚛️ React - Official Documentation
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.typescriptlang.org/docs/" 
+                                   target="_blank" 
+                                   class="text-blue-600 hover:underline">
+                                    📘 TypeScript Documentation
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://expressjs.com/" 
+                                   target="_blank" 
+                                   class="text-blue-600 hover:underline">
+                                    🚂 Express.js - Fast, unopinionated web framework
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://vitejs.dev/" 
+                                   target="_blank" 
+                                   class="text-blue-600 hover:underline">
+                                    ⚡ Vite - Next Generation Frontend Tooling
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://tailwindcss.com/" 
+                                   target="_blank" 
+                                   class="text-blue-600 hover:underline">
+                                    🎨 Tailwind CSS - Utility-first CSS framework
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2 text-gray-800">Tutorials & Articles</h3>
+                        <ul class="space-y-2">
+                            <li>
+                                <a href="https://javascript.info/websocket" 
+                                   target="_blank" 
+                                   class="text-blue-600 hover:underline">
+                                    📚 JavaScript.info - WebSocket
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://web.dev/eventsource-basics/" 
+                                   target="_blank" 
+                                   class="text-blue-600 hover:underline">
+                                    📚 web.dev - Stream Updates with Server-Sent Events
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Project Structure -->
+            <section class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-6 text-gray-800">Project Structuur</h2>
+                
+                <pre class="bg-gray-900 text-green-400 p-6 rounded-lg overflow-x-auto text-sm"><code>websocket-sse-demo/
+├── server.js                          # Node.js backend met WebSocket en SSE
+├── docs/
+│   └── index.html                     # GitHub Pages documentatie
+├── src/
+│   ├── components/
+│   │   ├── WebSocketDemo.tsx         # WebSocket demo component
+│   │   ├── SSEDemo.tsx               # Server-Sent Events demo component
+│   │   └── InfoSection.tsx           # Informatie sectie
+│   ├── hooks/
+│   │   ├── useWebSocket.ts           # WebSocket connectie logica
+│   │   └── useServerSentEvents.ts    # SSE connectie logica
+│   ├── App.tsx                        # Main app component
+│   ├── main.tsx                       # React entry point
+│   └── index.css                      # Tailwind CSS imports
+├── package.json
+└── README.md</code></pre>
+            </section>
+
+            <!-- API Endpoints -->
+            <section class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-6 text-gray-800">API Endpoints</h2>
+                
+                <div class="space-y-4">
+                    <div class="border-l-4 border-blue-500 pl-4">
+                        <h3 class="font-semibold text-gray-800 mb-2">WebSocket</h3>
+                        <code class="bg-gray-100 px-3 py-1 rounded text-sm">ws://localhost:3001</code>
+                        <p class="text-gray-600 mt-2">WebSocket connectie endpoint</p>
+                    </div>
+
+                    <div class="border-l-4 border-purple-500 pl-4">
+                        <h3 class="font-semibold text-gray-800 mb-2">HTTP / SSE</h3>
+                        <ul class="space-y-2">
+                            <li>
+                                <code class="bg-gray-100 px-3 py-1 rounded text-sm">GET /api/events</code>
+                                <p class="text-gray-600 mt-1">SSE endpoint voor real-time server updates</p>
+                            </li>
+                            <li>
+                                <code class="bg-gray-100 px-3 py-1 rounded text-sm">POST /api/broadcast</code>
+                                <p class="text-gray-600 mt-1">Broadcast bericht naar alle WebSocket clients</p>
+                            </li>
+                            <li>
+                                <code class="bg-gray-100 px-3 py-1 rounded text-sm">GET /api/health</code>
+                                <p class="text-gray-600 mt-1">Server health check</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- License -->
+            <section class="bg-white rounded-lg shadow-lg p-8">
+                <h2 class="text-3xl font-bold mb-4 text-gray-800">Licentie</h2>
+                <p class="text-gray-700">Dit project is gelicenseerd onder de MIT License.</p>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white py-8 mt-12">
+            <div class="container mx-auto px-4 text-center">
+                <p>&copy; 2026 WebSocket & SSE Demo. Made with ❤️ for learning purposes.</p>
+                <p class="mt-2 text-sm text-gray-400">
+                    <a href="https://github.com/Timva/websocket-sse-demo" class="hover:text-white transition">
+                        View on GitHub
+                    </a>
+                </p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
