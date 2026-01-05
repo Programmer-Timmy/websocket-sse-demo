@@ -1,9 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 
 interface WebSocketMessage {
-  type: 'connection' | 'echo' | 'broadcast'
+  type: 'connection' | 'message' | 'broadcast' | 'pong' | 'user-joined' | 'user-left' | 'typing'
   message: string
   timestamp?: string
+  latency?: number
+  clientCount?: number
+  fromSelf?: boolean
 }
 
 export function useWebSocket(url: string) {
@@ -40,9 +43,13 @@ export function useWebSocket(url: string) {
     }
   }, [url])
 
-  const sendMessage = (message: string) => {
+  const sendMessage = (message: string, type: string = 'message') => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify({ message }))
+      const payload: any = { message, type }
+      if (type === 'ping') {
+        payload.timestamp = Date.now()
+      }
+      wsRef.current.send(JSON.stringify(payload))
     }
   }
 

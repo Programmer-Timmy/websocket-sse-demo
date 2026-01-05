@@ -1,14 +1,50 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useWebSocket } from '../hooks/useWebSocket'
 
 export default function WebSocketDemo() {
   const [input, setInput] = useState('')
+  const [latency, setLatency] = useState<number | null>(null)
+  const typingTimeoutRef = useRef<NodeJS.Timeout>()
   const { connected, messages, sendMessage } = useWebSocket('ws://localhost:3001')
+
+  useEffect(() => {
+    // Check for pong messages to display latency (check first message as it's newest)
+    const lastMessage = messages[0]
+    if (lastMessage?.type === 'pong') {
+      setLatency(lastMessage.latency)
+    }
+  }, [messages])
 
   const handleSend = () => {
     if (input.trim()) {
       sendMessage(input)
       setInput('')
+    }
+  }
+
+  const handlePing = () => {
+    sendMessage('Ping test', 'ping')
+    setLatency(null) // Reset latency while waiting
+  }
+
+  const handleInputChange = (value: string) => {
+    setInput(value)
+    
+    // Throttle typing indicator - only send if not recently sent
+    if (connected && value.length > 0) {
+      if (!typingTimeoutRef.current) {
+        sendMessage('User is typing...', 'typing')
+      }
+      
+      // Clear existing timeout
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current)
+      }
+      
+      // Set new timeout to allow next typing indicator after 2 seconds
+      typingTimeoutRef.current = setTimeout(() => {
+        typingTimeoutRef.current = undefined
+      }, 2000)
     }
   }
 
@@ -33,19 +69,30 @@ export default function WebSocketDemo() {
           <span className="text-sm text-gray-600">
             {connected ? 'Connected' : 'Disconnected'}
           </span>
+          {latency !== null && (
+            <span className="text-xs text-green-600 font-mono bg-green-50 px-2 py-1 rounded">
+              {latency}ms
+            </span>
+          )}
         </div>
       </div>
 
       <div className="space-y-4">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <p className="text-sm text-blue-800">
+            💡 <strong>Real-time & Bi-directional:</strong> Instant messaging, live collaboration, typing indicators
+          </p>
+        </div>
+
         <div>
           <p className="text-sm text-gray-600 mb-2">
-            Bi-directional communication - Send and receive messages
+            Send messages and see instant responses
           </p>
           <div className="flex gap-2">
             <input
               type="text"
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => handleInputChange(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSend()}
               placeholder="Type a message..."
               className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -61,29 +108,43 @@ export default function WebSocketDemo() {
           </div>
         </div>
 
-        <button
-          onClick={handleBroadcast}
-          disabled={!connected}
-          className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
-        >
-          Send Broadcast to All Clients
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handlePing}
+            disabled={!connected}
+            className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors text-sm"
+          >
+            ⚡ Test Latency
+          </button>
+          <button
+            onClick={handleBroadcast}
+            disabled={!connected}
+            className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors text-sm"
+          >
+            📢 Broadcast to All
+          </button>
+        </div>
 
         <div className="bg-gray-50 rounded-lg p-4 h-64 overflow-y-auto">
           <h3 className="font-semibold text-gray-700 mb-2">Messages:</h3>
-          {messages.length === 0 ? (
+          {messages.filter(msg => msg.type !== 'pong' && msg.type !== 'typing').length === 0 ? (
             <p className="text-gray-400 text-sm">No messages yet...</p>
           ) : (
             <div className="space-y-2">
-              {messages.map((msg, idx) => (
-                <div key={idx} className="bg-white p-3 rounded border border-gray-200">
+              {messages.filter(msg => msg.type !== 'pong').map((msg, idx) => (
+                <div key={idx} className={`bg-white p-3 rounded border ${
+                  msg.fromSelf ? 'border-indigo-300 bg-indigo-50' : 'border-gray-200'
+                }`}>
                   <div className="flex justify-between items-start">
                     <span className={`text-xs font-semibold px-2 py-1 rounded ${
                       msg.type === 'connection' ? 'bg-green-100 text-green-800' :
                       msg.type === 'broadcast' ? 'bg-purple-100 text-purple-800' :
+                      msg.type === 'user-joined' ? 'bg-teal-100 text-teal-800' :
+                      msg.type === 'user-left' ? 'bg-orange-100 text-orange-800' :
+                      msg.fromSelf ? 'bg-indigo-100 text-indigo-800' :
                       'bg-blue-100 text-blue-800'
                     }`}>
-                      {msg.type}
+                      {msg.fromSelf ? 'you' : msg.type === 'message' ? 'other user' : msg.type}
                     </span>
                     {msg.timestamp && (
                       <span className="text-xs text-gray-500">
@@ -92,6 +153,9 @@ export default function WebSocketDemo() {
                     )}
                   </div>
                   <p className="text-sm text-gray-800 mt-2">{msg.message}</p>
+                  {msg.clientCount && (
+                    <p className="text-xs text-gray-500 mt-1">👥 {msg.clientCount} client(s) connected</p>
+                  )}
                 </div>
               ))}
             </div>

@@ -1,10 +1,16 @@
 import { useState, useRef, useCallback } from 'react'
 
 interface SSEMessage {
-  type: 'connection' | 'update'
+  type: 'connection' | 'metrics' | 'alert'
   message: string
   timestamp?: string
-  random?: number
+  metrics?: {
+    stockPrice: string
+    serverLoad: string
+    activeUsers: number
+    memoryUsage: string
+  }
+  severity?: 'info' | 'warning'
 }
 
 export function useServerSentEvents(url: string) {
@@ -24,7 +30,7 @@ export function useServerSentEvents(url: string) {
     
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data)
-      setMessages(prev => [data, ...prev])
+      setMessages(prev => [data, ...prev].slice(0, 50)) // Keep last 50 messages
     }
     
     eventSource.onerror = (error) => {
