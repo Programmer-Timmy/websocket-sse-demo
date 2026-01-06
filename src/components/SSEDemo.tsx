@@ -1,7 +1,8 @@
 import { useServerSentEvents } from '../hooks/useServerSentEvents'
+import { API_CONFIG } from '../config'
 
 export default function SSEDemo() {
-  const { connected, messages, connect, disconnect } = useServerSentEvents('https://ws.school.timmygamer.nl/api/events')
+  const { connected, messages, connect, disconnect } = useServerSentEvents(API_CONFIG.SSE_URL)
 
   const latestMetrics = messages.find(m => m.type === 'metrics')?.metrics
   const alerts = messages.filter(m => m.type === 'alert').slice(0, 3)

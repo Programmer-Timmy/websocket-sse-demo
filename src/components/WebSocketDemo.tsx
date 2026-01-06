@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { useWebSocket } from '../hooks/useWebSocket'
+import { API_CONFIG, BROADCAST_URL } from '../config'
 
 export default function WebSocketDemo() {
   const [input, setInput] = useState('')
   const [latency, setLatency] = useState<number | null>(null)
   const typingTimeoutRef = useRef<number | undefined>(undefined)
-  const { connected, messages, sendMessage } = useWebSocket('wss://ws.school.timmygamer.nl')
+  const { connected, messages, sendMessage } = useWebSocket(API_CONFIG.WS_URL)
 
   useEffect(() => {
     // Check for pong messages to display latency (check first message as it's newest)
@@ -50,7 +51,7 @@ export default function WebSocketDemo() {
 
   const handleBroadcast = async () => {
     try {
-      await fetch('https://wss.school.timmygamer.nl/api/broadcast', {
+      await fetch(BROADCAST_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: 'Broadcast message from UI!' })
