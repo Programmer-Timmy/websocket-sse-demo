@@ -2,6 +2,8 @@
 
 A comprehensive demo showcasing real-time communication using **WebSockets** and **Server-Sent Events (SSE)** with a Node.js backend and React + TypeScript frontend styled with Tailwind CSS.
 
+🌐 **[Live Demo on GitHub Pages](https://your-username.github.io/websocket-sse-demo/)** *(Note: You'll need to run the server locally or deploy it separately)*
+
 ## Features
 
 ### WebSocket
@@ -31,16 +33,20 @@ npm install
 
 ## Running the Demo
 
+You have multiple options to run the demo:
+
+### Option 1: Local Development (Recommended for Development)
+
 You need to run both the backend server and the frontend development server:
 
-### Terminal 1 - Start the Backend Server
+#### Terminal 1 - Start the Backend Server
 ```bash
 npm run server
 ```
 
-Server will start on `http://localhost:3001`
+Server will start on `http://localhost:3100`
 
-### Terminal 2 - Start the Frontend
+#### Terminal 2 - Start the Frontend
 ```bash
 npm run dev
 ```
@@ -48,6 +54,31 @@ npm run dev
 Frontend will start on `http://localhost:5173` (or another port if 5173 is busy)
 
 Then open your browser and navigate to the URL shown in the terminal
+
+### Option 2: Docker (Recommended for Production)
+
+Run the server using Docker:
+
+```bash
+# Build and run with docker-compose
+docker-compose up -d
+
+# Or build and run manually
+docker build -t websocket-sse-server .
+docker run -p 3100:3100 websocket-sse-server
+```
+
+Server will be available at `http://localhost:3100`
+
+Then you can:
+- Visit the [GitHub Pages demo](https://your-username.github.io/websocket-sse-demo/) and it will connect to play.timmygamer.nl:3100
+- Or build the frontend and serve it: `npm run build && npm run preview`
+
+### Option 3: GitHub Pages + Remote Server
+
+1. The server is running at `play.timmygamer.nl:3100`
+2. Visit the deployed GitHub Pages at `https://your-username.github.io/websocket-sse-demo/`
+3. The frontend will automatically connect to `ws://play.timmygamer.nl:3100`
 
 ## How to Use
 
@@ -70,6 +101,9 @@ Clean and simple component structure:
 ```
 websocket-sse-demo/
 ├── server.js                          # Node.js backend with WebSocket and SSE
+├── Dockerfile                         # Docker configuration for the server
+├── docker-compose.yml                 # Docker Compose configuration
+├── .github/workflows/deploy.yml       # GitHub Actions for auto-deployment
 ├── src/
 │   ├── components/
 │   │   ├── WebSocketDemo.tsx         # WebSocket demo component
@@ -81,6 +115,7 @@ websocket-sse-demo/
 │   ├── App.tsx                        # Main app component
 │   ├── main.tsx                       # React entry point
 │   └── index.css                      # Tailwind CSS imports
+├── docs/                              # Built files for GitHub Pages
 ├── package.json
 └── README.md
 ```
@@ -101,7 +136,8 @@ websocket-sse-demo/
 ## API Endpoints
 
 ### WebSocket
-- `ws://localhost:3001` - WebSocket connection endpoint
+- `ws://play.timmygamer.nl:3100` - WebSocket connection endpoint (production)
+- `ws://localhost:3100` - WebSocket connection endpoint (local development)
 
 ### HTTP/SSE
 - `GET /api/events` - SSE endpoint for real-time server updates
@@ -114,12 +150,47 @@ websocket-sse-demo/
 - **Express.js** - Web framework
 - **ws** - WebSocket library
 - **cors** - CORS middleware
+- **Docker** - Containerization
 
 ### Frontend
 - **React 19** - UI framework
 - **TypeScript** - Type safety
 - **Vite** - Build tool
 - **Tailwind CSS** - Styling
+- **GitHub Pages** - Hosting
+
+## Deployment
+
+### GitHub Pages (Frontend)
+
+The frontend is automatically deployed to GitHub Pages when you push to the main branch. The workflow:
+
+1. Builds the React app using Vite
+2. Copies the build to the `docs/` folder
+3. Deploys to GitHub Pages
+
+To enable GitHub Pages:
+1. Go to your repository Settings → Pages
+2. Set Source to "GitHub Actions"
+3. Push to main branch to trigger deployment
+
+### Docker (Backend)
+
+Deploy the server anywhere Docker is supported:
+
+```bash
+# Using docker-compose
+docker-compose up -d
+
+# Or using Docker directly
+docker build -t websocket-sse-server .
+docker run -d -p 3001:3001 --name websocket-sse-server websocket-sse-server
+```
+
+For production deployment, consider:
+- Using a reverse proxy (nginx) for SSL/TLS
+- Setting up environment variables for configuration
+- Using orchestration tools like Kubernetes or Docker Swarm
 
 ## Key Differences: WebSocket vs SSE
 

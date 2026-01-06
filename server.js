@@ -189,7 +189,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-const PORT = 3001;
+const PORT = 3100;
 server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
   console.log(`WebSocket server running on ws://localhost:${PORT}`);

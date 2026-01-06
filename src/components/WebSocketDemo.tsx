@@ -4,13 +4,13 @@ import { useWebSocket } from '../hooks/useWebSocket'
 export default function WebSocketDemo() {
   const [input, setInput] = useState('')
   const [latency, setLatency] = useState<number | null>(null)
-  const typingTimeoutRef = useRef<NodeJS.Timeout>()
-  const { connected, messages, sendMessage } = useWebSocket('ws://localhost:3001')
+  const typingTimeoutRef = useRef<number | undefined>(undefined)
+  const { connected, messages, sendMessage } = useWebSocket('ws://play.timmygamer.nl:3100')
 
   useEffect(() => {
     // Check for pong messages to display latency (check first message as it's newest)
     const lastMessage = messages[0]
-    if (lastMessage?.type === 'pong') {
+    if (lastMessage?.type === 'pong' && lastMessage.latency !== undefined) {
       setLatency(lastMessage.latency)
     }
   }, [messages])
@@ -50,7 +50,7 @@ export default function WebSocketDemo() {
 
   const handleBroadcast = async () => {
     try {
-      await fetch('http://localhost:3001/api/broadcast', {
+      await fetch('http://play.timmygamer.nl:3100/api/broadcast', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: 'Broadcast message from UI!' })
