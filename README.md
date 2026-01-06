@@ -2,7 +2,8 @@
 
 A comprehensive demo showcasing real-time communication using **WebSockets** and **Server-Sent Events (SSE)** with a Node.js backend and React + TypeScript frontend styled with Tailwind CSS.
 
-🌐 **[Live Demo on GitHub Pages](https://your-username.github.io/websocket-sse-demo/)** *(Note: You'll need to run the server locally or deploy it separately)*
+🌐 **[Documentation](https://programmer-timmy.github.io/websocket-sse-demo/)** - Main documentation page  
+🚀 **[Live Demo](https://programmer-timmy.github.io/websocket-sse-demo/demo/)** - Try the interactive demo
 
 ## Features
 
@@ -44,7 +45,7 @@ You need to run both the backend server and the frontend development server:
 npm run server
 ```
 
-Server will start on `http://localhost:3100`
+Server will start on `http://localhost:3100` (without SSL)
 
 #### Terminal 2 - Start the Frontend
 ```bash
@@ -57,28 +58,98 @@ Then open your browser and navigate to the URL shown in the terminal
 
 ### Option 2: Docker (Recommended for Production)
 
-Run the server using Docker:
-
+#### Without SSL (Development):
 ```bash
-# Build and run with docker-compose
 docker-compose up -d
-
-# Or build and run manually
-docker build -t websocket-sse-server .
-docker run -p 3100:3100 websocket-sse-server
 ```
 
-Server will be available at `http://localhost:3100`
+#### With SSL (Production):
+```bash
+# First, generate or obtain SSL certificates (see SSL section below)
+docker-compose -f docker-compose.ssl.yml up -d
+```
 
-Then you can:
-- Visit the [GitHub Pages demo](https://your-username.github.io/websocket-sse-demo/) and it will connect to play.timmygamer.nl:3100
-- Or build the frontend and serve it: `npm run build && npm run preview`
+Server will be available at `http://localhost:3100` or `https://localhost:3100` (with SSL)
 
 ### Option 3: GitHub Pages + Remote Server
 
-1. The server is running at `play.timmygamer.nl:3100`
+1. The server is running at `play.timmygamer.nl:3100` with SSL
 2. Visit the deployed GitHub Pages at `https://your-username.github.io/websocket-sse-demo/`
-3. The frontend will automatically connect to `ws://play.timmygamer.nl:3100`
+3. The frontend will automatically connect to `wss://play.timmygamer.nl:3100` (secure WebSocket)
+
+## SSL/TLS Configuration
+
+The server supports both HTTP and HTTPS (with WebSocket and WebSocket Secure).
+
+### Quick Start - Generate Self-Signed Certificates (Development)
+
+#### On Windows (PowerShell):
+```powershell
+.\generate-certs.ps1
+```
+
+#### On Linux/Mac:
+```bash
+chmod +x generate-certs.sh
+./generate-certs.sh
+```
+
+Then start the server with SSL:
+```bash
+USE_SSL=true npm run server
+```
+
+### Production SSL Certificates
+
+For production, use **Let's Encrypt** (free) or purchase certificates from a CA:
+
+#### Let's Encrypt (Recommended):
+
+**Quick Setup with Script:**
+```bash
+# Linux/Mac/WSL
+chmod +x setup-letsencrypt.sh
+sudo ./setup-letsencrypt.sh
+
+# Windows PowerShell
+.\setup-letsencrypt.ps1
+```
+
+**Manual Setup:**
+```bash
+# Install certbot
+sudo apt-get install certbot
+
+# Get certificate for your domain
+sudo certbot certonly --standalone -d play.timmygamer.nl --email your@email.com
+
+# Copy certificates
+sudo cp /etc/letsencrypt/live/play.timmygamer.nl/fullchain.pem ./certs/cert.pem
+sudo cp /etc/letsencrypt/live/play.timmygamer.nl/privkey.pem ./certs/key.pem
+sudo chown $USER:$USER ./certs/*.pem
+```
+
+See [SSL-SETUP.md](SSL-SETUP.md) for detailed instructions and auto-renewal setup.
+
+#### Docker with SSL:
+```bash
+# Using docker-compose with SSL
+docker-compose -f docker-compose.ssl.yml up -d
+
+# Or manually
+docker run -d \
+  -p 3100:3100 \
+  -e USE_SSL=true \
+  -v $(pwd)/certs:/app/certs:ro \
+  websocket-sse-server
+```
+
+### Environment Variables for SSL
+
+- `USE_SSL=true` - Enable SSL/TLS support
+- `SSL_CERT_PATH` - Path to certificate file (default: `certs/cert.pem`)
+- `SSL_KEY_PATH` - Path to private key file (default: `certs/key.pem`)
+- `PORT` - Server port (default: `3100`)
 
 ## How to Use
 
@@ -102,8 +173,13 @@ Clean and simple component structure:
 websocket-sse-demo/
 ├── server.js                          # Node.js backend with WebSocket and SSE
 ├── Dockerfile                         # Docker configuration for the server
-├── docker-compose.yml                 # Docker Compose configuration
+├── docker-compose.yml                 # Docker Compose configuration (HTTP)
+├── docker-compose.ssl.yml             # Docker Compose with SSL support
+├── generate-certs.sh                  # SSL certificate generator (Linux/Mac)
+├── generate-certs.ps1                 # SSL certificate generator (Windows)
 ├── .github/workflows/deploy.yml       # GitHub Actions for auto-deployment
+├── certs/                             # SSL certificates directory
+│   └── README.md                      # SSL certificate documentation
 ├── src/
 │   ├── components/
 │   │   ├── WebSocketDemo.tsx         # WebSocket demo component
@@ -135,14 +211,17 @@ websocket-sse-demo/
 
 ## API Endpoints
 
-### WebSocket
-- `ws://play.timmygamer.nl:3100` - WebSocket connection endpoint (production)
-- `ws://localhost:3100` - WebSocket connection endpoint (local development)
+### WebSocket (Secure)
+- `wss://play.timmygamer.nl:3100` - WebSocket Secure connection endpoint (production)
+- `ws://localhost:3100` - WebSocket connection endpoint (local development without SSL)
 
-### HTTP/SSE
+### HTTP/HTTPS & SSE
 - `GET /api/events` - SSE endpoint for real-time server updates
 - `POST /api/broadcast` - Broadcast message to all WebSocket clients
 - `GET /api/health` - Server health check
+
+Production: `https://play.timmygamer.nl:3100/api/*`  
+Development: `http://localhost:3100/api/*`
 
 ## Technologies Used
 

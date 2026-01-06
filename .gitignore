@@ -12,6 +12,13 @@ dist
 dist-ssr
 *.local
 
+# SSL Certificates - NEVER commit real certificates!
+certs/*.pem
+certs/*.key
+certs/*.crt
+certs/*.pfx
+certs/*.p12
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

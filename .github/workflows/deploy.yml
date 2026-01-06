@@ -38,10 +38,10 @@ jobs:
       - name: Build frontend
         run: npm run build
       
-      - name: Copy build to docs
+      - name: Copy build to docs/demo
         run: |
-          rm -rf docs/*
-          cp -r dist/* docs/
+          rm -rf docs/demo/*
+          cp -r dist/* docs/demo/
       
       - name: Setup Pages
         uses: actions/configure-pages@v4
