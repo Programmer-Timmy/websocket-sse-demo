@@ -73,9 +73,9 @@ Server will be available at `http://localhost:3100` or `https://localhost:3100` 
 
 ### Option 3: GitHub Pages + Remote Server
 
-1. The server is running at `play.timmygamer.nl:3100` with SSL
+1. The server is running at `ws.school.timmygamer.nl:3100` with SSL
 2. Visit the deployed GitHub Pages at `https://your-username.github.io/websocket-sse-demo/`
-3. The frontend will automatically connect to `wss://play.timmygamer.nl:3100` (secure WebSocket)
+3. The frontend will automatically connect to `wss://ws.school.timmygamer.nl:3100` (secure WebSocket)
 
 ## SSL/TLS Configuration
 
@@ -121,11 +121,11 @@ sudo ./setup-letsencrypt.sh
 sudo apt-get install certbot
 
 # Get certificate for your domain
-sudo certbot certonly --standalone -d play.timmygamer.nl --email your@email.com
+sudo certbot certonly --standalone -d ws.school.timmygamer.nl --email your@email.com
 
 # Copy certificates
-sudo cp /etc/letsencrypt/live/play.timmygamer.nl/fullchain.pem ./certs/cert.pem
-sudo cp /etc/letsencrypt/live/play.timmygamer.nl/privkey.pem ./certs/key.pem
+sudo cp /etc/letsencrypt/live/ws.school.timmygamer.nl/fullchain.pem ./certs/cert.pem
+sudo cp /etc/letsencrypt/live/ws.school.timmygamer.nl/privkey.pem ./certs/key.pem
 sudo chown $USER:$USER ./certs/*.pem
 ```
 
@@ -212,15 +212,20 @@ websocket-sse-demo/
 ## API Endpoints
 
 ### WebSocket (Secure)
-- `wss://play.timmygamer.nl:3100` - WebSocket Secure connection endpoint (production)
-- `ws://localhost:3100` - WebSocket connection endpoint (local development without SSL)
+- **Production:** `wss://ws.school.timmygamer.nl` - WebSocket Secure connection endpoint
+- **Development:** `ws://localhost:3100` - WebSocket connection endpoint (local)
 
 ### HTTP/HTTPS & SSE
 - `GET /api/events` - SSE endpoint for real-time server updates
 - `POST /api/broadcast` - Broadcast message to all WebSocket clients
 - `GET /api/health` - Server health check
 
-Production: `https://play.timmygamer.nl:3100/api/*`  
+**Production:** `https://ws.school.timmygamer.nl/api/*`  
+**Development:** `http://localhost:3100/api/*`
+
+The frontend automatically detects the environment and connects to the appropriate endpoint.
+
+Production: `https://ws.school.timmygamer.nl:3100/api/*`  
 Development: `http://localhost:3100/api/*`
 
 ## Technologies Used
