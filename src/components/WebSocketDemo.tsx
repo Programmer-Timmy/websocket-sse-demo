@@ -5,7 +5,7 @@ export default function WebSocketDemo() {
   const [input, setInput] = useState('')
   const [latency, setLatency] = useState<number | null>(null)
   const typingTimeoutRef = useRef<number | undefined>(undefined)
-  const { connected, messages, sendMessage } = useWebSocket('wss://play.timmygamer.nl:3100')
+  const { connected, messages, sendMessage } = useWebSocket('wss://ws.shool.timmygamer.nl')
 
   useEffect(() => {
     // Check for pong messages to display latency (check first message as it's newest)
