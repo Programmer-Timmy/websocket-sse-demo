@@ -5,7 +5,7 @@ export default function WebSocketDemo() {
   const [input, setInput] = useState('')
   const [latency, setLatency] = useState<number | null>(null)
   const typingTimeoutRef = useRef<number | undefined>(undefined)
-  const { connected, messages, sendMessage } = useWebSocket('wss://ws.shool.timmygamer.nl')
+  const { connected, messages, sendMessage } = useWebSocket('wss://ws.school.timmygamer.nl')
 
   useEffect(() => {
     // Check for pong messages to display latency (check first message as it's newest)
@@ -50,7 +50,7 @@ export default function WebSocketDemo() {
 
   const handleBroadcast = async () => {
     try {
-      await fetch('https://ws.shool.timmygamer.nl/api/broadcast', {
+      await fetch('https://wss.school.timmygamer.nl/api/broadcast', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: 'Broadcast message from UI!' })
