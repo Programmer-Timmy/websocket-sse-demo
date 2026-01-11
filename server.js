@@ -33,11 +33,10 @@ wss.on('connection', (ws) => {
     console.log('Received WebSocket message:', data);
     
     if (data.type === 'ping') {
-      // Instant ping-pong response (showcase low latency)
-      const latency = Math.max(0, Date.now() - data.timestamp);
+      // Echo back the client timestamp for round-trip calculation
       ws.send(JSON.stringify({
         type: 'pong',
-        latency,
+        clientTimestamp: data.timestamp,
         timestamp: new Date().toISOString()
       }));
     } else if (data.type === 'typing') {

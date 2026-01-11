@@ -1,10 +1,11 @@
-import {useState, useEffect, useRef} from 'react'
+import {useEffect, useRef, useState} from 'react'
 
 // better to put interfaces in a separate file, but for a demo it's fine.
 interface WebSocketMessage {
     type: 'connection' | 'message' | 'broadcast' | 'pong' | 'user-joined' | 'user-left' | 'typing'
     message: string
     timestamp?: string
+    clientTimestamp?: number
     latency?: number
     clientCount?: number
     fromSelf?: boolean
@@ -31,6 +32,9 @@ export function useWebSocket(url: string) {
 
         ws.onmessage = (event) => {
             const data = JSON.parse(event.data)
+            if (data.type === 'pong' && data.clientTimestamp) {
+                data.latency = Date.now() - data.clientTimestamp
+            }
             setMessages(prev => [data, ...prev])
         }
 
