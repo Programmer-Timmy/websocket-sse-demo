@@ -34,7 +34,7 @@ wss.on('connection', (ws) => {
     
     if (data.type === 'ping') {
       // Instant ping-pong response (showcase low latency)
-      const latency = Date.now() - data.timestamp;
+      const latency = Math.max(0, Date.now() - data.timestamp);
       ws.send(JSON.stringify({
         type: 'pong',
         latency,
